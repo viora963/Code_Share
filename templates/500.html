@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}500 - Server Error{% endblock %}
+{% block content %}
+<div class="center-error">
+  <h1>500</h1>
+  <p class="muted">Erreur serveur.</p>
+  <a class="btn btn-primary" href="{{ url_for('dashboard') }}">Dashboard</a>
+</div>
+{% endblock %}

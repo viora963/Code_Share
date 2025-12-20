@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Connexion - CodeShare{% endblock %}
+
+{% block content %}
+<div class="auth-card">
+  <div class="auth-head">
+    <img src="{{ url_for('static', filename='img/saturn.png') }}" class="auth-logo" alt="Saturn">
+    <h1>Login</h1>
+    <p>Connectez-vous à votre compte</p>
+  </div>
+
+  <form method="POST" action="{{ url_for('login_post') }}" class="form">
+    <label>Username</label>
+    <input name="username" required autofocus>
+
+    <label>Password</label>
+    <input type="password" name="password" required>
+
+    <button class="btn btn-primary" type="submit">Sign in</button>
+  </form>
+
+  <div class="auth-foot">
+    Pas encore de compte ? <a href="{{ url_for('signup') }}">Créer un compte</a>
+  </div>
+</div>
+{% endblock %}

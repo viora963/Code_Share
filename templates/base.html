@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}CodeShare{% endblock %}</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+</head>
+<body class="{% if request.endpoint in ['login','signup'] %}auth-body{% endif %}">
+  {% if request.endpoint not in ['login','signup'] %}
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a class="brand" href="{{ url_for('dashboard') }}">
+        <img class="brand-logo" src="{{ url_for('static', filename='img/saturn.png') }}" alt="Saturn">
+        <span class="brand-name">CodeShare</span>
+      </a>
+
+      <nav class="nav">
+        <a class="nav-link" href="{{ url_for('dashboard') }}">Home</a>
+        <a class="nav-link" href="{{ url_for('dashboard') }}#popular">Explore</a>
+        <a class="nav-link" href="{{ url_for('dashboard') }}#my-projects">My Projects</a>
+      </nav>
+
+      <div class="topbar-right">
+        <div class="search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" placeholder="Search..." disabled>
+        </div>
+        <a class="user-chip" href="{{ url_for('profile') }}">
+          <span class="avatar">{{ (user.username[0] if user else 'U')|upper }}</span>
+          <span class="user-name">{{ user.username if user else 'User' }}</span>
+        </a>
+        <a class="btn btn-ghost" href="{{ url_for('logout') }}">Logout</a>
+      </div>
+    </div>
+  </header>
+  {% endif %}
+
+  <main class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash">
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+</body>
+</html>

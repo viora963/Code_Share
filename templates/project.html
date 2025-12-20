@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block title %}{{ project.title }} - CodeShare{% endblock %}
+
+{% block content %}
+<section class="panel">
+  <div class="project-head">
+    <div>
+      <h1 class="project-title"><i class="fa-solid fa-folder-open"></i> {{ project.title }}</h1>
+      <div class="muted">Owner: <b>{{ project.owner_username }}</b></div>
+      {% if project.description %}
+        <p class="muted mt">{{ project.description }}</p>
+      {% endif %}
+    </div>
+
+    <form method="POST" action="{{ url_for('star', pid=project.id) }}">
+      <button class="btn {% if user_liked %}btn-danger{% else %}btn-secondary{% endif %}" type="submit">
+        <i class="fa-solid fa-heart"></i> {{ like_count }}
+      </button>
+    </form>
+  </div>
+</section>
+
+<section class="grid-2">
+  <div class="panel">
+    <div class="panel-head">
+      <h2>Members</h2>
+    </div>
+
+    {% if is_owner %}
+    <form method="POST" action="{{ url_for('add_member', pid=project.id) }}" class="row gap">
+      <input class="input" name="username" placeholder="username" required>
+      <select class="input" name="role">
+        <option value="member">member</option>
+        <option value="admin">admin</option>
+      </select>
+      <button class="btn btn-primary" type="submit">Add</button>
+    </form>
+    {% endif %}
+
+    <div class="members">
+      {% for m in members %}
+        <div class="member">
+          <span class="avatar sm">{{ m.username[0]|upper }}</span>
+          <div class="member-info">
+            <div><b>{{ m.username }}</b></div>
+            <div class="muted small">{{ m.role }}</div>
+          </div>
+          {% if is_owner and m.role != 'owner' %}
+          <form method="POST" action="{{ url_for('remove_member', pid=project.id, member_id=m.user_id) }}">
+            <button class="icon-btn danger" type="submit" onclick="return confirm('Retirer ce membre ?')">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </form>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <h2>Files</h2>
+    </div>
+
+    <form method="POST" action="{{ url_for('upload_file', pid=project.id) }}" enctype="multipart/form-data" class="row gap">
+      <input type="file" name="file" required class="input">
+      <button class="btn btn-primary" type="submit">Upload</button>
+    </form>
+
+    {% if files %}
+      <div class="list mt">
+        {% for f in files %}
+          <div class="row-item">
+            <div class="row-main">
+              <div class="row-title"><i class="fa-solid fa-file"></i> {{ f.filename }}</div>
+              <div class="row-sub muted small">by {{ f.uploader }} • {{ f.uploaded_at.strftime('%d/%m/%Y %H:%M') }}</div>
+            </div>
+            <div class="row-metrics">
+              <a class="icon-btn" href="{{ url_for('download_file', file_id=f.id) }}"><i class="fa-solid fa-download"></i></a>
+              {% if is_owner %}
+              <form method="POST" action="{{ url_for('delete_file', file_id=f.id) }}">
+                <button class="icon-btn danger" type="submit" onclick="return confirm('Supprimer ce fichier ?')">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </form>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty">No files yet.</div>
+    {% endif %}
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-head">
+    <h2>Comments</h2>
+  </div>
+
+  {% if comments %}
+    <div class="comments">
+      {% for c in comments %}
+        <div class="comment">
+          <span class="avatar sm">{{ c.author[0]|upper }}</span>
+          <div>
+            <div class="small"><b>{{ c.author }}</b> <span class="muted">• {{ c.created_at.strftime('%d/%m/%Y %H:%M') }}</span></div>
+            <div class="muted">{{ c.message }}</div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty">No comments.</div>
+  {% endif %}
+
+  <form method="POST" action="{{ url_for('add_comment', pid=project.id) }}" class="row gap mt">
+    <textarea class="input" name="comment" required rows="3" placeholder="Add a comment..."></textarea>
+    <button class="btn btn-primary" type="submit">Send</button>
+  </form>
+</section>
+{% endblock %}

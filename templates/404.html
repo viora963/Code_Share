@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}404 - Page not found{% endblock %}
+
+{% block content %}
+<div class="center-error">
+  <div style="font-size:72px; margin-bottom:10px;">🪐</div>
+
+  <h1 style="font-size:48px; margin:0;">404</h1>
+
+  <p class="muted" style="margin:10px 0 25px;">
+    The page you are looking for doesn’t exist or has been moved.
+  </p>
+
+  <div class="row gap" style="justify-content:center;">
+    <button class="btn btn-secondary" onclick="history.back()">
+      ← Go back
+    </button>
+    <a href="{{ url_for('dashboard') }}" class="btn btn-primary">
+      Dashboard
+    </a>
+  </div>
+</div>
+{% endblock %}

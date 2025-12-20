@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Inscription - CodeShare{% endblock %}
+
+{% block content %}
+<div class="auth-card">
+  <div class="auth-head">
+    <img src="{{ url_for('static', filename='img/saturn.png') }}" class="auth-logo" alt="Saturn">
+    <h1>Sign up</h1>
+    <p>Créez votre compte</p>
+  </div>
+
+  <form method="POST" action="{{ url_for('signup_post') }}" class="form">
+    <label>Username</label>
+    <input name="username" required>
+
+    <label>Email</label>
+    <input type="email" name="email" required>
+
+    <label>Password</label>
+    <input type="password" name="password" required minlength="6">
+
+    <label>Confirm</label>
+    <input type="password" name="confirm_password" required>
+
+    <button class="btn btn-primary" type="submit">Create account</button>
+  </form>
+
+  <div class="auth-foot">
+    Déjà un compte ? <a href="{{ url_for('login') }}">Se connecter</a>
+  </div>
+</div>
+{% endblock %}

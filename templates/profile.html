@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Profile - CodeShare{% endblock %}
+
+{% block content %}
+<section class="panel">
+  <div class="profile-head">
+    <div class="row gap">
+      <span class="avatar xl">{{ user.username[0]|upper }}</span>
+      <div>
+        <h1>{{ user.username }}</h1>
+        <div class="muted">{{ user.email }}</div>
+        <div class="muted small">Joined {{ user.created_at.strftime('%d/%m/%Y') }}</div>
+      </div>
+    </div>
+
+    <div class="profile-stats">
+      <div class="mini-stat"><div class="num">{{ project_count }}</div><div class="muted">Projects</div></div>
+      <div class="mini-stat"><div class="num">{{ comment_count }}</div><div class="muted">Comments</div></div>
+      <div class="mini-stat"><div class="num">{{ like_count }}</div><div class="muted">Stars Given</div></div>
+    </div>
+  </div>
+</section>
+{% endblock %}

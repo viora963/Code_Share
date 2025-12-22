@@ -8,13 +8,23 @@ from utils import login_required, current_user
 # Route handlers
 from routes.auth import login, signup, logout
 from routes.dashboard import dashboard
-from routes.profile import profile
+from routes.profile import (
+    profile,
+    user_profile,
+    follow_user,
+    unfollow_user,
+    user_followers,
+    user_following,
+    user_projects,
+    user_stars,
+)
 from routes.project import (
     project,
     create_project,
     add_member,
     remove_member,
     like,
+    project_stargazers,
     download_file,
     delete_file,
 )
@@ -47,6 +57,13 @@ def create_app():
     # ================= MAIN =================
     app.add_url_rule("/dashboard", "dashboard", dashboard)
     app.add_url_rule("/profile", "profile", profile)
+    app.add_url_rule("/users/<int:user_id>", "user_profile", user_profile)
+    app.add_url_rule("/users/<int:user_id>/follow", "follow_user", follow_user, methods=["POST"])
+    app.add_url_rule("/users/<int:user_id>/unfollow", "unfollow_user", unfollow_user, methods=["POST"])
+    app.add_url_rule("/users/<int:user_id>/followers", "user_followers", user_followers)
+    app.add_url_rule("/users/<int:user_id>/following", "user_following", user_following)
+    app.add_url_rule("/users/<int:user_id>/projects", "user_projects", user_projects)
+    app.add_url_rule("/users/<int:user_id>/stars", "user_stars", user_stars)
 
     # ================= PROJECTS =================
     app.add_url_rule(
@@ -82,6 +99,14 @@ def create_app():
         "like",
         like,
         methods=["POST"],
+    )
+
+    # Stargazers (who starred a project)
+    app.add_url_rule(
+        "/project/<int:pid>/stargazers",
+        "project_stargazers",
+        project_stargazers,
+        methods=["GET"],
     )
 
     # ================= FILES =================

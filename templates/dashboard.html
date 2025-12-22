@@ -1,42 +1,43 @@
 {% extends "base.html" %}
-{% block title %}Dashboard - CodeShare{% endblock %}
+{% block title %}Dashboard · CodeShare{% endblock %}
 
 {% block content %}
 <section class="hero">
-  <div class="hero-left">
-    <h1>Welcome, {{ user.username }}!</h1>
-    <div class="hero-card">
-      <div class="hero-profile">
-        <span class="avatar xl">{{ user.username[0]|upper }}</span>
-        <div>
-          <div class="muted">{{ user.email }}</div>
-          <div class="row gap">
-            <a class="btn btn-secondary" href="{{ url_for('profile') }}">Edit Profile</a>
-            <a class="btn btn-ghost" href="{{ url_for('logout') }}">Logout</a>
-          </div>
+  <div class="panel hero-card">
+    <div class="hero-left">
+      <h1>Welcome, {{ user.username }}!</h1>
+      <div class="hero-sub">
+        <div class="pill">
+          <i class="fa-solid fa-envelope"></i>
+          <span>{{ user.email }}</span>
+        </div>
+
+        <div class="hero-actions">
+          <a class="btn btn-secondary" href="{{ url_for('profile') }}">
+            Edit Profile
+          </a>
+          <a class="btn btn-ghost" href="{{ url_for('logout') }}">
+            Logout
+          </a>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="hero-stats">
-    <div class="stat">
-      <i class="fa-solid fa-folder"></i>
-      <div>
+    <div class="hero-stats">
+      <div class="stat-card stat-purple">
+        <div class="stat-ico"><i class="fa-solid fa-folder"></i></div>
         <div class="stat-num">{{ stats_projects }}</div>
         <div class="stat-label">Projects</div>
       </div>
-    </div>
-    <div class="stat">
-      <i class="fa-solid fa-star"></i>
-      <div>
+
+      <div class="stat-card stat-blue">
+        <div class="stat-ico"><i class="fa-solid fa-star"></i></div>
         <div class="stat-num">{{ stats_stars }}</div>
         <div class="stat-label">Stars Received</div>
       </div>
-    </div>
-    <div class="stat">
-      <i class="fa-solid fa-user-group"></i>
-      <div>
+
+      <div class="stat-card stat-pink">
+        <div class="stat-ico"><i class="fa-solid fa-user-group"></i></div>
         <div class="stat-num">{{ stats_followers }}</div>
         <div class="stat-label">Followers</div>
       </div>
@@ -45,26 +46,35 @@
 </section>
 
 <section class="grid-2">
-  <div class="panel" id="my-projects">
+  <div id="my-projects" class="panel">
     <div class="panel-head">
       <h2>My Projects</h2>
-      <button class="btn btn-primary" data-open-modal="newProject">Create New Project</button>
+      <button class="btn btn-primary" type="button" onclick="openCreateProject()">
+        Create New Project <i class="fa-solid fa-arrow-right"></i>
+      </button>
     </div>
 
-    {% if my_projects %}
+    {% if my_projects and my_projects|length > 0 %}
       <div class="list">
         {% for p in my_projects %}
-          <a class="row-item" href="{{ url_for('project', pid=p.id) }}">
-            <div class="row-main">
-              <div class="row-title"><i class="fa-solid fa-folder"></i> {{ p.title }}</div>
-              <div class="row-sub muted">
-                <span class="pill">{{ p.status }}</span>
-                <span>• {{ p.created_at.strftime('%d/%m/%Y') }}</span>
+          <a class="row" href="{{ url_for('project', pid=p.id) }}">
+            <div class="row-left">
+              <div class="row-icon"><i class="fa-solid fa-folder"></i></div>
+              <div>
+                <div class="row-title">{{ p.title }}</div>
+                <div class="row-sub">
+                  {% if p.status %}
+                    <span class="badge badge-muted">{{ p.status|capitalize }}</span>
+                  {% endif %}
+                  <span class="muted">• {{ p.created_at }}</span>
+                </div>
               </div>
             </div>
-            <div class="row-metrics muted">
-              <span><i class="fa-solid fa-star"></i> {{ p.stars }}</span>
-              <span><i class="fa-solid fa-user-group"></i> {{ p.members }}</span>
+
+            <div class="row-right">
+              <span class="meta"><i class="fa-solid fa-star"></i> {{ p.stars }}</span>
+              <span class="meta"><i class="fa-solid fa-user-group"></i> {{ p.members }}</span>
+              <span class="meta"><i class="fa-solid fa-chevron-right"></i></span>
             </div>
           </a>
         {% endfor %}
@@ -78,20 +88,19 @@
     <div class="panel-head">
       <h2>Recent Activities</h2>
     </div>
-    {% if activities %}
+
+    {% if activities and activities|length > 0 %}
       <div class="activity">
         {% for a in activities %}
           <div class="activity-item">
-            <div class="activity-left">
-              <span class="dot"></span>
-              <div>
-                <div>
-                  <b>{{ a.actor }}</b>
-                  <span class="muted"> {{ a.action.replace('_',' ') }} </span>
-                  <a href="{{ url_for('project', pid=a.project_id) }}">{{ a.project_title }}</a>
-                </div>
-                <div class="muted small">{{ a.created_at.strftime('%d/%m/%Y %H:%M') }}</div>
+            <div class="dot"></div>
+            <div class="activity-body">
+              <div class="activity-line">
+                <strong>{{ a.actor }}</strong>
+                <span class="muted"> {{ a.action.replace('_',' ') }}</span>
+                <a class="link" href="{{ url_for('project', pid=a.project_id) }}">{{ a.project_title }}</a>
               </div>
+              <div class="muted small">{{ a.created_at }}</div>
             </div>
           </div>
         {% endfor %}
@@ -103,27 +112,33 @@
 </section>
 
 <section class="grid-2">
-  <div class="panel" id="popular">
+  <div id="popular" class="panel">
     <div class="panel-head">
       <h2>Popular Projects</h2>
     </div>
-    {% if popular_projects %}
+
+    {% if popular_projects and popular_projects|length > 0 %}
       <div class="list">
         {% for p in popular_projects %}
-          <a class="row-item" href="{{ url_for('project', pid=p.id) }}">
-            <div class="row-main">
-              <div class="row-title"><i class="fa-solid fa-rocket"></i> {{ p.title }}</div>
-              <div class="row-sub muted">
-                <span><i class="fa-solid fa-star"></i> {{ p.stars }}</span>
-                <span>•</span>
-                <span><i class="fa-solid fa-user-group"></i> {{ p.members }} members</span>
+          <a class="row" href="{{ url_for('project', pid=p.id) }}">
+            <div class="row-left">
+              <div class="row-icon"><i class="fa-solid fa-folder-open"></i></div>
+              <div>
+                <div class="row-title">{{ p.title }}</div>
+                <div class="row-sub">
+                  <span class="meta"><i class="fa-solid fa-star"></i> {{ p.stars }}</span>
+                  <span class="meta"><i class="fa-solid fa-user-group"></i> {{ p.members }} members</span>
+                </div>
               </div>
+            </div>
+            <div class="row-right">
+              <span class="meta"><i class="fa-solid fa-chevron-right"></i></span>
             </div>
           </a>
         {% endfor %}
       </div>
     {% else %}
-      <div class="empty">No popular projects.</div>
+      <div class="empty">No public projects yet.</div>
     {% endif %}
   </div>
 
@@ -131,19 +146,19 @@
     <div class="panel-head">
       <h2>Latest Comments</h2>
     </div>
-    {% if latest_comments %}
-      <div class="comments-mini">
+
+    {% if latest_comments and latest_comments|length > 0 %}
+      <div class="comments">
         {% for c in latest_comments %}
-          <div class="comment-mini">
-            <div class="avatar sm">{{ c.author[0]|upper }}</div>
-            <div>
-              <div class="small">
-                <b>{{ c.author }}</b>
-                <span class="muted"> on </span>
-                <a href="{{ url_for('project', pid=c.project_id) }}">{{ c.project_title }}</a>
-                <span class="muted"> • {{ c.created_at.strftime('%H:%M') }}</span>
+          <div class="comment">
+            <div class="comment-ava">{{ c.author[0]|upper }}</div>
+            <div class="comment-body">
+              <div class="comment-top">
+                <strong>{{ c.author }}</strong>
+                <span class="muted small">• {{ c.created_at }}</span>
               </div>
-              <div class="muted">{{ c.message }}</div>
+              <div class="comment-text">“{{ c.message }}”</div>
+              <a class="link small" href="{{ url_for('project', pid=c.project_id) }}">{{ c.project_title }}</a>
             </div>
           </div>
         {% endfor %}
@@ -154,31 +169,34 @@
   </div>
 </section>
 
-<!-- Modal -->
-<div class="modal" id="newProject">
-  <div class="modal-card">
-    <div class="modal-head">
-      <h3>Create project</h3>
-      <button class="icon-btn" data-close-modal="newProject"><i class="fa-solid fa-xmark"></i></button>
+{# Create Project Modal (dashboard only) #}
+<div id="create-project-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Create Project">
+  <div class="modal-head">
+    <div>
+      <div class="modal-title">Create project</div>
+      <div class="modal-sub muted">Start a new repository-like space.</div>
     </div>
-
-    <form method="POST" action="{{ url_for('create_project') }}" class="form">
-      <label>Title</label>
-      <input name="title" required minlength="3">
-
-      <label>Description</label>
-      <textarea name="description" rows="4"></textarea>
-
-      <label class="row gap">
-        <input type="checkbox" name="is_private" value="1">
-        <span>Private project</span>
-      </label>
-
-      <div class="row gap end">
-        <button type="button" class="btn btn-secondary" data-close-modal="newProject">Cancel</button>
-        <button class="btn btn-primary" type="submit">Create</button>
-      </div>
-    </form>
+    <button class="icon-btn" onclick="closeAllModals()" aria-label="Close">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
   </div>
+
+  <form class="modal-form" method="POST" action="{{ url_for('create_project') }}">
+    <label>Title</label>
+    <input name="title" type="text" minlength="3" required placeholder="e.g. Awesome App">
+
+    <label>Description</label>
+    <textarea name="description" rows="4" placeholder="What is this project about?"></textarea>
+
+    <label class="check">
+      <input type="checkbox" name="is_private" value="1">
+      <span>Private project</span>
+    </label>
+
+    <div class="modal-actions">
+      <button type="button" class="btn btn-ghost" onclick="closeAllModals()">Cancel</button>
+      <button type="submit" class="btn btn-primary">Create</button>
+    </div>
+  </form>
 </div>
 {% endblock %}

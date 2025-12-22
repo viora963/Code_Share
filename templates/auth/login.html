@@ -1,26 +1,31 @@
 {% extends "base.html" %}
-{% block title %}Connexion - CodeShare{% endblock %}
+{% block title %}Login · CodeShare{% endblock %}
 
 {% block content %}
-<div class="auth-card">
-  <div class="auth-head">
-    <img src="{{ url_for('static', filename='img/saturn.png') }}" class="auth-logo" alt="Saturn">
-    <h1>Login</h1>
-    <p>Connectez-vous à votre compte</p>
-  </div>
+<div class="auth-wrap">
+  <div class="panel auth-card">
+    <div class="auth-brand">
+      <img src="{{ url_for('static', filename='img/saturn.png') }}" alt="Saturn">
+      <div>
+        <h1>Welcome back</h1>
+        <div class="muted">Login to your CodeShare account</div>
+      </div>
+    </div>
 
-  <form method="POST" action="{{ url_for('login_post') }}" class="form">
-    <label>Username</label>
-    <input name="username" required autofocus>
+    <form method="POST" action="{{ url_for('login') }}" class="auth-form">
+      <label>Username</label>
+      <input name="username" required autocomplete="username">
 
-    <label>Password</label>
-    <input type="password" name="password" required>
+      <label>Password</label>
+      <input type="password" name="password" required autocomplete="current-password">
 
-    <button class="btn btn-primary" type="submit">Sign in</button>
-  </form>
+      <button class="btn btn-primary w100" type="submit">Login</button>
+    </form>
 
-  <div class="auth-foot">
-    Pas encore de compte ? <a href="{{ url_for('signup') }}">Créer un compte</a>
+    <div class="auth-foot">
+      <span class="muted">No account?</span>
+      <a class="link" href="{{ url_for('signup') }}">Create one</a>
+    </div>
   </div>
 </div>
 {% endblock %}

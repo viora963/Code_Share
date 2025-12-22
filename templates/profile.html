@@ -1,23 +1,35 @@
 {% extends "base.html" %}
-{% block title %}Profile - CodeShare{% endblock %}
+{% block title %}Profile · CodeShare{% endblock %}
 
 {% block content %}
 <section class="panel">
   <div class="profile-head">
-    <div class="row gap">
-      <span class="avatar xl">{{ user.username[0]|upper }}</span>
-      <div>
-        <h1>{{ user.username }}</h1>
-        <div class="muted">{{ user.email }}</div>
-        <div class="muted small">Joined {{ user.created_at.strftime('%d/%m/%Y') }}</div>
-      </div>
+    <div class="profile-ava">{{ user.username[0]|upper }}</div>
+    <div>
+      <h1 class="profile-name">{{ user.username }}</h1>
+      <div class="muted">{{ user.email }}</div>
+      <div class="muted small">Joined: {{ user.created_at }}</div>
     </div>
+  </div>
+</section>
 
-    <div class="profile-stats">
-      <div class="mini-stat"><div class="num">{{ project_count }}</div><div class="muted">Projects</div></div>
-      <div class="mini-stat"><div class="num">{{ comment_count }}</div><div class="muted">Comments</div></div>
-      <div class="mini-stat"><div class="num">{{ like_count }}</div><div class="muted">Stars Given</div></div>
-    </div>
+<section class="grid-3">
+  <div class="panel stat-mini">
+    <div class="mini-ico"><i class="fa-solid fa-folder"></i></div>
+    <div class="mini-num">{{ project_count }}</div>
+    <div class="mini-label">Owned Projects</div>
+  </div>
+
+  <div class="panel stat-mini">
+    <div class="mini-ico"><i class="fa-solid fa-comments"></i></div>
+    <div class="mini-num">{{ comment_count }}</div>
+    <div class="mini-label">Comments</div>
+  </div>
+
+  <div class="panel stat-mini">
+    <div class="mini-ico"><i class="fa-solid fa-star"></i></div>
+    <div class="mini-num">{{ like_count }}</div>
+    <div class="mini-label">Stars Given</div>
   </div>
 </section>
 {% endblock %}

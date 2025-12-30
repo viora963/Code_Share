@@ -32,6 +32,7 @@ CREATE TABLE users (
   email VARCHAR(100) NOT NULL,
   password_hash VARCHAR(255) NOT NULL,
   bio VARCHAR(500) NULL,
+  profile_image VARCHAR(500) NULL,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
   -- Normalisation (évite Alice vs alice)

@@ -4,7 +4,14 @@
 {% block content %}
 <section class="panel">
   <div class="profile-head">
-    <div class="profile-ava">{{ user.username[0]|upper }}</div>
+    <div class="profile-ava">
+      {% if user.profile_image %}
+        <img src="{{ url_for('uploaded_file', filename=user.profile_image) }}"
+             alt="{{ user.username }}">
+      {% else %}
+        {{ user.username[0]|upper }}
+      {% endif %}
+    </div>
     <div>
       <h1 class="profile-name">{{ user.username }}</h1>
       <div class="muted">{{ user.email }}</div>

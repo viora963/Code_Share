@@ -159,6 +159,7 @@ def create_app():
                 p.title,
                 p.description,
                 u.username AS owner,
+                u.id AS owner_id,
                 COUNT(s.user_id) AS stars
             FROM projects p
             JOIN users u ON u.id = p.owner_id

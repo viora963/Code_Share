@@ -52,6 +52,7 @@ def dashboard():
           pa.project_id,
           p.title AS project_title,
           COALESCE(u.username, 'System') AS actor,
+          u.id AS actor_id,
           pa.action,
           pa.created_at
         FROM project_activity pa
@@ -90,6 +91,7 @@ def dashboard():
           c.project_id,
           p.title AS project_title,
           u.username AS author,
+          u.id AS author_id,
           c.message,
           c.created_at
         FROM comments c

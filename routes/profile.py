@@ -91,7 +91,9 @@ def profile():
           ua.action,
           ua.created_at,
           u1.username AS actor,
-          u2.username AS target
+          u1.id AS actor_id,
+          u2.username AS target,
+          u2.id AS target_id
         FROM user_activity ua
         JOIN users u1 ON u1.id = ua.user_id
         JOIN users u2 ON u2.id = ua.target_user_id

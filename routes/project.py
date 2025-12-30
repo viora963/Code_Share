@@ -142,7 +142,7 @@ def project(pid: int):
 
     files = fetchall(
         """
-        SELECT f.id AS file_id, f.filename, f.uploaded_at, u.username AS uploader
+        SELECT f.id AS file_id, f.filename, f.uploaded_at, u.username AS uploader, u.id AS uploader_id
         FROM files f
         JOIN users u ON u.id=f.uploaded_by
         WHERE f.project_id=%s
@@ -153,7 +153,7 @@ def project(pid: int):
 
     comments = fetchall(
         """
-        SELECT c.id AS comment_id, c.message, c.created_at, u.username
+        SELECT c.id AS comment_id, c.message, c.created_at, u.username, u.id AS user_id
         FROM comments c
         JOIN users u ON u.id=c.user_id
         WHERE c.project_id=%s
@@ -171,8 +171,8 @@ def project(pid: int):
 
     # Convert dict rows to tuples for the template (member[0], member[1], member[2]) etc.
     members_t = [(m["user_id"], m["username"], m["role"]) for m in members]
-    files_t = [(f["file_id"], f["filename"], f["uploaded_at"], f["uploader"]) for f in files]
-    comments_t = [(c["comment_id"], c["message"], c["created_at"], c["username"]) for c in comments]
+    files_t = [(f["file_id"], f["filename"], f["uploaded_at"], f["uploader"], f["uploader_id"]) for f in files]
+    comments_t = [(c["comment_id"], c["message"], c["created_at"], c["username"], c["user_id"]) for c in comments]
 
     return render_template(
         "project.html",

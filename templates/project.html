@@ -8,7 +8,7 @@
       <h1 class="project-title">{{ project[1] }}</h1>
       <div class="muted owner-line">
         <span>
-          Owner: <strong>{{ project[5] }}</strong>
+          Owner: <a class="link" href="{{ url_for('user_profile', user_id=project_owner_id) }}"><strong>{{ project[5] }}</strong></a>
           {% if project[6] %} • <span class="badge badge-muted">{{ project[6]|capitalize }}</span>{% endif %}
         </span>
         <span class="pill small">👥 {{ owner_followers }} follower{% if owner_followers != 1 %}s{% endif %}</span>
@@ -71,7 +71,9 @@
         <div class="row-left">
           <div class="row-icon"><i class="fa-solid fa-user"></i></div>
           <div>
-            <div class="row-title">{{ m[1] }}</div>
+            <div class="row-title">
+              <a class="link" href="{{ url_for('user_profile', user_id=m[0]) }}">{{ m[1] }}</a>
+            </div>
             <div class="row-sub">
               <span class="badge {% if m[2]=='owner' %}badge-owner{% elif m[2]=='admin' %}badge-admin{% else %}badge-muted{% endif %}">
                 {{ m[2]|capitalize }}
@@ -120,7 +122,7 @@
             <div>
               <div class="row-title">{{ f[1] }}</div>
               <div class="row-sub muted small">
-                by <strong>{{ f[3] }}</strong> • {{ f[2] }}
+                by <a class="link" href="{{ url_for('user_profile', user_id=f[4]) }}"><strong>{{ f[3] }}</strong></a> • {{ f[2] }}
               </div>
             </div>
           </div>
@@ -165,7 +167,7 @@
         <div class="comment-ava">{{ c[3][0]|upper }}</div>
         <div class="comment-body">
           <div class="comment-top">
-            <strong>{{ c[3] }}</strong>
+            <a class="link" href="{{ url_for('user_profile', user_id=c[4]) }}"><strong>{{ c[3] }}</strong></a>
             <span class="muted small">• {{ c[2] }}</span>
           </div>
           <div class="comment-text">{{ c[1] }}</div>

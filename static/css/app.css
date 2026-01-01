@@ -610,6 +610,18 @@ footer{
 .btn-danger{border-color: rgba(255,75,75,0.35); color: rgba(255,200,200,0.95)}
 .btn-danger:hover{background: rgba(255,75,75,0.12)}
 
+/* Delete Project (Owner only) */
+.btn-delete-project{
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  color: #ffffff;
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 10px 25px rgba(220, 38, 38, 0.45);
+}
+.btn-delete-project:hover{
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  box-shadow: 0 16px 35px rgba(220, 38, 38, 0.60);
+}
+
 /* Flash */
 .flash-wrap{display:flex; flex-direction:column; gap:10px; margin-top:16px}
 .alert{

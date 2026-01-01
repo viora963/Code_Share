@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import render_template, current_app
 from db import fetchall, fetchone
 from utils import login_required, current_user
 
@@ -119,4 +119,5 @@ def dashboard():
         activities=activities,
         popular_projects=popular_projects,
         latest_comments=latest_comments,
+        language_choices=current_app.config.get("PROJECT_LANGUAGE_CHOICES", []),
     )

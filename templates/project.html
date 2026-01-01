@@ -13,6 +13,14 @@
         </span>
         <span class="pill small">👥 {{ owner_followers }} follower{% if owner_followers != 1 %}s{% endif %}</span>
       </div>
+
+      {% if project_languages and project_languages|length > 0 %}
+      <div class="row-sub" style="margin-top:8px;">
+        {% for lang in project_languages %}
+          <span class="badge badge-muted" style="margin-right:6px;">{{ lang }}</span>
+        {% endfor %}
+      </div>
+      {% endif %}
       {% if user.id != project_owner_id %}
       <form class="follow-form" method="POST"
             action="{{ url_for(is_following_owner and 'unfollow_user' or 'follow_user', user_id=project_owner_id) }}">
@@ -24,13 +32,25 @@
       {% endif %}
     </div>
 
-    <form method="POST" action="{{ url_for('like', pid=project[0]) }}">
-      <button class="btn {% if user_liked %}btn-secondary{% else %}btn-ghost{% endif %}" type="submit">
-        <i class="fa-solid fa-star"></i>
-        {% if user_liked %}Starred{% else %}Star{% endif %}
-        <span class="pill-num">{{ like_count }}</span>
-      </button>
-    </form>
+    <div class="row" style="gap:10px; align-items:center;">
+      <form method="POST" action="{{ url_for('like', pid=project[0]) }}">
+        <button class="btn {% if user_liked %}btn-secondary{% else %}btn-ghost{% endif %}" type="submit">
+          <i class="fa-solid fa-star"></i>
+          {% if user_liked %}Starred{% else %}Star{% endif %}
+          <span class="pill-num">{{ like_count }}</span>
+        </button>
+      </form>
+
+      {% if is_owner %}
+	      <form method="POST" action="{{ url_for('delete_project', pid=project[0]) }}"
+            onsubmit="return confirm('Delete this project? This will remove the project, members, stars, comments, and files.');">
+	        <button class="btn btn-delete-project" type="submit">
+          <i class="fa-solid fa-trash"></i>
+          Delete Project
+        </button>
+      </form>
+      {% endif %}
+    </div>
   </div>
 
   {% if project[2] %}

@@ -28,6 +28,7 @@ from routes.project import (
     project_stargazers,
     download_file,
     delete_file,
+    delete_project,
 )
 
 
@@ -110,6 +111,14 @@ def create_app():
         "/project/<int:pid>/like",
         "like",
         like,
+        methods=["POST"],
+    )
+
+    # Delete project (owner only)
+    app.add_url_rule(
+        "/project/<int:pid>/delete",
+        "delete_project",
+        delete_project,
         methods=["POST"],
     )
 

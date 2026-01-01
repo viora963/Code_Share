@@ -192,6 +192,17 @@
     <label>Description</label>
     <textarea name="description" rows="4" placeholder="What is this project about?"></textarea>
 
+    <label>Languages (you can select multiple)</label>
+    <select name="languages" multiple size="8">
+      {% for lang in language_choices %}
+        <option value="{{ lang }}">{{ lang }}</option>
+      {% endfor %}
+    </select>
+    <div class="muted small">Tip: hold Ctrl (Windows) or Cmd (Mac) to select multiple. You can also add custom languages below.</div>
+
+    <label>Custom languages (optional)</label>
+    <input name="custom_languages" type="text" placeholder="e.g. Python, SQL, Docker">
+
     <label class="check">
       <input type="checkbox" name="is_private" value="1">
       <span>Private project</span>

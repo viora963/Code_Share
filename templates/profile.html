@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Profile · CodeShare{% endblock %}
+
+{% block content %}
+<section class="panel">
+  <div class="profile-head">
+    <div class="profile-ava">
+      {% if user.profile_image %}
+        <img src="{{ url_for('uploaded_file', filename=user.profile_image) }}"
+             alt="{{ user.username }}">
+      {% else %}
+        {{ user.username[0]|upper }}
+      {% endif %}
+    </div>
+    <div>
+      <h1 class="profile-name">{{ user.username }}</h1>
+      <div class="muted">{{ user.email }}</div>
+      <div class="muted small">Joined: {{ user.created_at }}</div>
+    </div>
+    <div class="profile-actions">
+      <a class="btn btn-secondary" href="{{ url_for('edit_profile') }}">Edit Profile</a>
+    </div>
+  </div>
+</section>
+
+<section class="grid-3 profile-stats">
+  <div class="panel stat-mini stat-mini--projects">
+    <div class="mini-ico"><i class="fa-solid fa-folder"></i></div>
+    <div class="mini-num">{{ project_count }}</div>
+    <div class="mini-label">Owned Projects</div>
+  </div>
+
+  <div class="panel stat-mini stat-mini--comments">
+    <div class="mini-ico"><i class="fa-solid fa-comments"></i></div>
+    <div class="mini-num">{{ comment_count }}</div>
+    <div class="mini-label">Comments Received</div>
+  </div>
+
+  <div class="panel stat-mini stat-mini--stars">
+    <div class="mini-ico"><i class="fa-solid fa-star"></i></div>
+    <div class="mini-num">{{ like_count }}</div>
+    <div class="mini-label">Stars Given</div>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-head">
+    <h2>Recent Activities</h2>
+  </div>
+
+  {% if activities and activities|length > 0 %}
+    <div class="activity">
+      {% for a in activities %}
+        <div class="activity-item">
+          <div class="dot"></div>
+          <div class="activity-body">
+            <div class="activity-line">
+              <a class="link" href="{{ url_for('user_profile', user_id=a.actor_id) }}"><strong>{{ a.actor }}</strong></a>
+              {% if a.action == 'followed' %}
+                <span class="muted"> followed </span>
+              {% elif a.action == 'unfollowed' %}
+                <span class="muted"> unfollowed </span>
+              {% else %}
+                <span class="muted"> {{ a.action.replace('_',' ') }} </span>
+              {% endif %}
+              <a class="link" href="{{ url_for('user_profile', user_id=a.target_id) }}"><strong>{{ a.target }}</strong></a>
+            </div>
+            <div class="muted small">{{ a.created_at }}</div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty">No activity.</div>
+  {% endif %}
+</section>
+{% endblock %}

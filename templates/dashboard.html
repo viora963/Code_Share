@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · CodeShare{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="panel hero-card">
+    <div class="hero-left">
+      <h1>Welcome, {{ user.username }}!</h1>
+      <div class="hero-sub">
+        <div class="pill">
+          <i class="fa-solid fa-envelope"></i>
+          <span>{{ user.email }}</span>
+        </div>
+
+        <div class="hero-actions">
+          <a class="btn btn-secondary" href="{{ url_for('edit_profile') }}">
+            Edit Profile
+          </a>
+          <a class="btn btn-ghost" href="{{ url_for('logout') }}">
+            Logout
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat-card stat-purple stat-static">
+        <div class="stat-ico"><i class="fa-solid fa-folder"></i></div>
+        <div class="stat-num">{{ stats_projects }}</div>
+        <div class="stat-label">Projects</div>
+      </div>
+
+      <a class="stat-card stat-blue" href="{{ url_for('user_stars', user_id=user.id) }}" style="text-decoration:none;">
+        <div class="stat-ico"><i class="fa-solid fa-star"></i></div>
+        <div class="stat-num">{{ stats_stars }}</div>
+        <div class="stat-label">Stars Received</div>
+      </a>
+
+      <a class="stat-card stat-pink" href="{{ url_for('user_followers', user_id=user.id) }}" style="text-decoration:none;">
+        <div class="stat-ico"><i class="fa-solid fa-user-group"></i></div>
+        <div class="stat-num">{{ stats_followers }}</div>
+        <div class="stat-label">Followers</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="grid-2">
+  <div id="my-projects" class="panel">
+    <div class="panel-head">
+      <h2>My Projects</h2>
+      <button class="btn btn-primary" type="button" onclick="openCreateProject()">
+        Create New Project <i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </div>
+
+    {% if my_projects and my_projects|length > 0 %}
+      <div class="list">
+        {% for p in my_projects %}
+          <a class="row" href="{{ url_for('project', pid=p.id) }}">
+            <div class="row-left">
+              <div class="row-icon"><i class="fa-solid fa-folder"></i></div>
+              <div>
+                <div class="row-title">{{ p.title }}</div>
+                <div class="row-sub">
+                  {% if p.status %}
+                    <span class="badge badge-muted">{{ p.status|capitalize }}</span>
+                  {% endif %}
+                  <span class="muted">• {{ p.created_at }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="row-right">
+              <span class="meta"><i class="fa-solid fa-star"></i> {{ p.stars }}</span>
+                  <span class="meta"><i class="fa-solid fa-download"></i> {{ p.downloads }}</span>
+              <span class="meta"><i class="fa-solid fa-user-group"></i> {{ p.members }}</span>
+              <span class="meta"><i class="fa-solid fa-chevron-right"></i></span>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty">No projects yet.</div>
+    {% endif %}
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <h2>Recent Activities</h2>
+    </div>
+
+    {% if activities and activities|length > 0 %}
+      <div class="activity">
+        {% for a in activities %}
+          <div class="activity-item">
+            <div class="dot"></div>
+            <div class="activity-body">
+              <div class="activity-line">
+                {% if a.actor_id %}
+                  <a class="link" href="{{ url_for('user_profile', user_id=a.actor_id) }}"><strong>{{ a.actor }}</strong></a>
+                {% else %}
+                <strong>{{ a.actor }}</strong>
+              {% endif %}
+              <span class="muted"> {{ a.action.replace('_',' ') }}</span>
+              <a class="link" href="{{ url_for('project', pid=a.project_id) }}">{{ a.project_title }}</a>
+            </div>
+              <div class="muted small">{{ a.created_at }}</div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty">No activity.</div>
+    {% endif %}
+  </div>
+</section>
+
+<section class="grid-2">
+  <div id="popular" class="panel">
+    <div class="panel-head">
+      <h2>Popular Projects</h2>
+    </div>
+
+    {% if popular_projects and popular_projects|length > 0 %}
+      <div class="list">
+        {% for p in popular_projects %}
+          <a class="row" href="{{ url_for('project', pid=p.id) }}">
+            <div class="row-left">
+              <div class="row-icon"><i class="fa-solid fa-folder-open"></i></div>
+              <div>
+                <div class="row-title">{{ p.title }}</div>
+                <div class="row-sub">
+                  <span class="meta"><i class="fa-solid fa-star"></i> {{ p.stars }}</span>
+                  <span class="meta"><i class="fa-solid fa-download"></i> {{ p.downloads }}</span>
+                  <span class="meta"><i class="fa-solid fa-user-group"></i> {{ p.members }} members</span>
+                </div>
+              </div>
+            </div>
+            <div class="row-right">
+              <span class="meta"><i class="fa-solid fa-chevron-right"></i></span>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty">No public projects yet.</div>
+    {% endif %}
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <h2>Latest Comments</h2>
+    </div>
+
+    {% if latest_comments and latest_comments|length > 0 %}
+      <div class="comments">
+        {% for c in latest_comments %}
+          <div class="comment">
+            <div class="comment-ava">{{ c.author[0]|upper }}</div>
+            <div class="comment-body">
+              <div class="comment-top">
+                <a class="link" href="{{ url_for('user_profile', user_id=c.author_id) }}"><strong>{{ c.author }}</strong></a>
+                <span class="muted small">• {{ c.created_at }}</span>
+              </div>
+              <div class="comment-text">“{{ c.message }}”</div>
+              <a class="link small" href="{{ url_for('project', pid=c.project_id) }}">{{ c.project_title }}</a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty">No comments.</div>
+    {% endif %}
+  </div>
+</section>
+
+{# Create Project Modal (dashboard only) #}
+<div id="create-project-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Create Project">
+  <div class="modal-head">
+    <div>
+      <div class="modal-title">Create project</div>
+      <div class="modal-sub muted">Start a new repository-like space.</div>
+    </div>
+    <button class="icon-btn" onclick="closeAllModals()" aria-label="Close">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+
+  <form class="modal-form" method="POST" action="{{ url_for('create_project') }}">
+    <label>Title</label>
+    <input name="title" type="text" minlength="3" required placeholder="e.g. Awesome App">
+
+    <label>Description</label>
+    <textarea name="description" rows="4" placeholder="What is this project about?"></textarea>
+
+    <label>Languages (you can select multiple)</label>
+    <select name="languages" multiple size="8">
+      {% for lang in language_choices %}
+        <option value="{{ lang }}">{{ lang }}</option>
+      {% endfor %}
+    </select>
+    <div class="muted small">Tip: hold Ctrl (Windows) or Cmd (Mac) to select multiple. You can also add custom languages below.</div>
+
+    <label>Custom languages (optional)</label>
+    <input name="custom_languages" type="text" placeholder="e.g. Python, SQL, Docker">
+
+    <label class="check">
+      <input type="checkbox" name="is_private" value="1">
+      <span>Private project</span>
+    </label>
+
+    <div class="modal-actions">
+      <button type="button" class="btn btn-ghost" onclick="closeAllModals()">Cancel</button>
+      <button type="submit" class="btn btn-primary">Create</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

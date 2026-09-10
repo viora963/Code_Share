@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Login · CodeShare{% endblock %}
+
+{% block content %}
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="auth-logo">🪐</div>
+      <div class="auth-header-text">
+        <h1>Welcome back</h1>
+        <p>Login to your CodeShare account</p>
+      </div>
+    </div>
+
+    <form method="POST" action="{{ url_for('login') }}" class="auth-form">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input id="username" name="username" required autocomplete="username" placeholder="Enter your username">
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input id="password" type="password" name="password" required autocomplete="current-password" placeholder="Enter your password">
+      </div>
+
+      <button class="auth-btn" type="submit">Login</button>
+    </form>
+
+    <div class="auth-footer">
+      No account? <a href="{{ url_for('signup') }}">Create one</a>
+    </div>
+  </div>
+{% endblock %}
